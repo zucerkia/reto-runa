@@ -1,11 +1,16 @@
-import ExpressServer from "@infrastructure/server"
+import init from "@infrastructure/config/init"
+import FileController from "@interface/controllers/File.controller"
 
 const main = async () => {
   try {
-    const server = new ExpressServer()
-    server.listen(3000)
+    init()
+    const fileController = new FileController()
+    await fileController.saveAll()
+    await fileController.getTransactions()
+    process.exit(0)
   } catch (error) {
     console.error(error)
+    process.exit(1)
   }
 }
 
