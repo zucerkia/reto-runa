@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  app:
+    tty: true
+    depends_on:
+      - app-db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file: .env.docker
+    ports:
+      - '3000:3000'
+    networks:
+      - app-network
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npx prisma generate
+        npx prisma migrate deploy
+        npm run dev:docker
+
+  app-db:
+    image: mysql:5.7
+    platform: linux/amd64
+    restart: always
+    env_file: .env.docker
+    volumes:
+      - app-db-data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+    ports:
+      - 33060:3306
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  app-db-data:

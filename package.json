@@ -4,19 +4,23 @@
   "description": "prueba técnica para Runa",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts",
+    "dev:docker": "dotenv -e .env.docker -- ts-node-dev -r tsconfig-paths/register --files src/index.ts",
+    "dev": "dotenv -e .env.local -- ts-node-dev -r tsconfig-paths/register --files src/index.ts",
     "build": "rm -rf dist && tsc && tsc-alias",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "start:docker": "docker-compose -f docker-compose.yml up --build",
+    "migrate": "npx dotenv -e .env.local prisma migrate dev -- --name",
+    "reset:db": "npx dotenv -e .env.local prisma migrate reset"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/express": "^4.17.21",
-    "express": "^4.19.2"
+    "@prisma/client": "^5.14.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
+    "dotenv-cli": "^7.4.2",
     "prisma": "^5.14.0",
     "ts-node-dev": "^2.0.0",
     "tsc-alias": "^1.8.10",
